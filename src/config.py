@@ -1,10 +1,7 @@
 import os
+from dotenv import load_dotenv
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
+load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_RAW_DIR = os.path.join(BASE_DIR, "data", "raw")
@@ -20,7 +17,7 @@ LEARNING_RATE = float(os.getenv("LEARNING_RATE", 0.001))
 MODEL_PATH = os.getenv("MODEL_PATH", os.path.join(MODELS_DIR, "handwriting_model.h5"))
 
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
-API_PORT = int(os.getenv("PORT", os.getenv("API_PORT", 8000)))
+API_PORT = int(os.getenv("API_PORT", 8000))
 API_RELOAD = os.getenv("API_RELOAD", "false").lower() == "true"
 API_WORKERS = int(os.getenv("API_WORKERS", 1))
 
