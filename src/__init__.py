@@ -1,0 +1,4 @@
+"""
+Handwriting recognition ML project.
+"""
+
