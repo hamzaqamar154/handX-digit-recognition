@@ -16,6 +16,12 @@ python -c "import fastapi; import uvicorn; print('Imports OK')" || {
     exit 1
 }
 
+echo "Testing app import..."
+python -c "import sys; sys.path.insert(0, '.'); from api.app import app; print('App import OK')" || {
+    echo "ERROR: Failed to import app"
+    exit 1
+}
+
 echo "Checking model file..."
 if [ -f "models/handwriting_model.h5" ]; then
     echo "Model file found: models/handwriting_model.h5"
