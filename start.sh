@@ -10,6 +10,12 @@ echo "Working directory: $(pwd)"
 echo "Python: $(python --version)"
 echo "=========================================="
 
+echo "Checking Python imports..."
+python -c "import fastapi; import uvicorn; print('Imports OK')" || {
+    echo "ERROR: Failed to import required modules"
+    exit 1
+}
+
 echo "Checking model file..."
 if [ -f "models/handwriting_model.h5" ]; then
     echo "Model file found: models/handwriting_model.h5"
@@ -18,8 +24,11 @@ else
     echo "WARNING: Model file not found at models/handwriting_model.h5"
     echo "Listing models directory:"
     ls -la models/ || echo "Models directory does not exist"
+    echo "Server will start but predictions will fail until model is available"
 fi
 
-echo "Starting uvicorn server..."
-exec python -m uvicorn api.app:app --host 0.0.0.0 --port $PORT --workers 1 --log-level info
+echo "Starting uvicorn server on port $PORT..."
+echo "Command: python -m uvicorn api.app:app --host 0.0.0.0 --port $PORT --log-level info"
+
+exec python -m uvicorn api.app:app --host 0.0.0.0 --port $PORT --log-level info --timeout-keep-alive 30 --access-log
 

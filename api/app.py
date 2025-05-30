@@ -55,19 +55,23 @@ def load_model_background():
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info("Server starting up...")
-    logger.info(f"Startup: Current working directory: {os.getcwd()}")
-    logger.info(f"Startup: Model path: {MODEL_PATH}")
-    logger.info(f"Startup: Model path exists: {os.path.exists(MODEL_PATH)}")
-    
-    thread = threading.Thread(target=load_model_background, daemon=True)
-    thread.start()
-    logger.info("Startup: Model loading started in background")
+    try:
+        logger.info("Server starting up...")
+        logger.info(f"Startup: Current working directory: {os.getcwd()}")
+        logger.info(f"Startup: Model path: {MODEL_PATH}")
+        logger.info(f"Startup: Model path exists: {os.path.exists(MODEL_PATH)}")
+        
+        thread = threading.Thread(target=load_model_background, daemon=True)
+        thread.start()
+        logger.info("Startup: Model loading started in background")
+    except Exception as e:
+        logger.error(f"Startup error: {str(e)}", exc_info=True)
 
 @app.get("/")
 async def root():
     return {
         "message": "Handwriting Recognition API",
+        "status": "running",
         "endpoints": {
             "/predict": "POST - Upload image for prediction",
             "/health": "GET - Health check"
