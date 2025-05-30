@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 RUN mkdir -p models data/raw data/processed
+RUN chmod +x start.sh
 
 ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=production
@@ -20,5 +21,5 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD python -m uvicorn api.app:app --host 0.0.0.0 --port $PORT --workers 1
+CMD ["./start.sh"]
 
