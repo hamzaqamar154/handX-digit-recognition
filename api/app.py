@@ -15,14 +15,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 try:
-    from src.predict import HandwritingPredictor
     from src.config import MODEL_PATH, CORS_ORIGINS, ENVIRONMENT
 except Exception as e:
-    logger.error(f"Failed to import modules: {e}", exc_info=True)
+    logger.warning(f"Failed to import config: {e}")
     MODEL_PATH = None
     CORS_ORIGINS = ["*"]
     ENVIRONMENT = os.getenv("ENVIRONMENT", "production")
-    HandwritingPredictor = None
+
+HandwritingPredictor = None
 
 app = FastAPI(title="Handwriting Recognition API", version="1.0.0")
 
@@ -50,11 +50,13 @@ model_loading = False
 import threading
 
 def load_model_background():
-    global predictor, model_loading
-    if HandwritingPredictor is None:
-        logger.warning("HandwritingPredictor not available - model loading skipped")
-        return
+    global predictor, model_loading, HandwritingPredictor
     try:
+        if HandwritingPredictor is None:
+            logger.info("Lazy loading HandwritingPredictor module...")
+            from src.predict import HandwritingPredictor as HP
+            HandwritingPredictor = HP
+        
         if MODEL_PATH and os.path.exists(MODEL_PATH):
             logger.info(f"Background: Loading model from {MODEL_PATH}")
             model_loading = True
