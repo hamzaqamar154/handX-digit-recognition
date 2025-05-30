@@ -39,4 +39,7 @@ def create_model():
     return model
 
 def load_model(model_path):
+    import os
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found at {model_path}")
     return keras.models.load_model(model_path)
