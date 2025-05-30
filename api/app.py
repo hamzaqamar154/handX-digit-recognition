@@ -26,10 +26,13 @@ except Exception as e:
 
 app = FastAPI(title="Handwriting Recognition API", version="1.0.0")
 
-if CORS_ORIGINS == ["*"]:
+try:
+    if CORS_ORIGINS == ["*"]:
+        allow_origins = ["*"]
+    else:
+        allow_origins = [origin.strip() for origin in CORS_ORIGINS]
+except:
     allow_origins = ["*"]
-else:
-    allow_origins = [origin.strip() for origin in CORS_ORIGINS]
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,6 +41,8 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+logger.info("FastAPI app created successfully")
 
 predictor = None
 model_loading = False
