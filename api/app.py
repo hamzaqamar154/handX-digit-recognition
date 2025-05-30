@@ -1,6 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from PIL import Image
 import io
 import sys
 import os
@@ -77,27 +76,32 @@ def ensure_model_loaded():
 
 @app.get("/")
 async def root():
-    ensure_model_loaded()
     return {
         "message": "Handwriting Recognition API",
         "status": "running",
         "endpoints": {
             "/predict": "POST - Upload image for prediction",
-            "/health": "GET - Health check"
+            "/health": "GET - Health check",
+            "/ready": "GET - Readiness probe"
         }
     }
 
 @app.get("/health")
 async def health():
-    ensure_model_loaded()
     return {
         "status": "healthy",
         "model_loaded": predictor is not None,
         "model_loading": model_loading
     }
 
+@app.get("/ready")
+async def ready():
+    return {"status": "ready"}
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
+    from PIL import Image
+    
     if predictor is None:
         logger.error("Prediction attempted but model not loaded")
         raise HTTPException(status_code=503, detail="Model not loaded. Please train the model first.")
