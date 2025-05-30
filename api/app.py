@@ -7,16 +7,23 @@ import logging
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+try:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+except:
+    pass
+
 logger = logging.getLogger(__name__)
 
 try:
     from src.config import MODEL_PATH, CORS_ORIGINS, ENVIRONMENT
 except Exception as e:
-    logger.warning(f"Failed to import config: {e}")
+    try:
+        logger.warning(f"Failed to import config: {e}")
+    except:
+        print(f"Warning: Failed to import config: {e}")
     MODEL_PATH = None
     CORS_ORIGINS = ["*"]
     ENVIRONMENT = os.getenv("ENVIRONMENT", "production")
@@ -41,7 +48,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-logger.info("FastAPI app created successfully")
+try:
+    logger.info("FastAPI app created successfully")
+except:
+    print("FastAPI app created successfully")
 
 predictor = None
 model_loading = False
