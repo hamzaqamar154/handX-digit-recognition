@@ -33,16 +33,36 @@ app.add_middleware(
 )
 
 predictor = None
+model_loading = False
+
+import threading
+
+def load_model_background():
+    global predictor, model_loading
+    try:
+        logger.info(f"Background: Checking model at {MODEL_PATH}")
+        if os.path.exists(MODEL_PATH):
+            logger.info(f"Background: Loading model from {MODEL_PATH}")
+            model_loading = True
+            predictor = HandwritingPredictor()
+            model_loading = False
+            logger.info("Background: Model loaded successfully")
+        else:
+            logger.warning(f"Background: Model not found at {MODEL_PATH}")
+    except Exception as e:
+        model_loading = False
+        logger.error(f"Background: Error loading model: {str(e)}", exc_info=True)
 
 @app.on_event("startup")
 async def startup_event():
-    global predictor
-    if os.path.exists(MODEL_PATH):
-        logger.info(f"Loading model from {MODEL_PATH}")
-        predictor = HandwritingPredictor()
-        logger.info("Model loaded successfully")
-    else:
-        logger.warning(f"Model not found at {MODEL_PATH}")
+    logger.info("Server starting up...")
+    logger.info(f"Startup: Current working directory: {os.getcwd()}")
+    logger.info(f"Startup: Model path: {MODEL_PATH}")
+    logger.info(f"Startup: Model path exists: {os.path.exists(MODEL_PATH)}")
+    
+    thread = threading.Thread(target=load_model_background, daemon=True)
+    thread.start()
+    logger.info("Startup: Model loading started in background")
 
 @app.get("/")
 async def root():
@@ -58,7 +78,8 @@ async def root():
 async def health():
     return {
         "status": "healthy",
-        "model_loaded": predictor is not None
+        "model_loaded": predictor is not None,
+        "model_loading": model_loading
     }
 
 @app.post("/predict")
