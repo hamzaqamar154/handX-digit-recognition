@@ -160,15 +160,7 @@ docker-compose up -d
 
 Access at http://localhost:8000 (API) and http://localhost:8501 (UI).
 
-### Fly.io
 
-1. Install Fly CLI: `curl -L https://fly.io/install.sh | sh`
-2. Run `fly launch` to create config
-3. Deploy with `fly deploy`
-
-### Other Platforms
-
-Works with any Docker platform (Render, Railway, Google Cloud Run, AWS, Azure). Set `ENVIRONMENT=production` and update `CORS_ORIGINS` in your environment variables.
 
 ### Environment Variables
 
