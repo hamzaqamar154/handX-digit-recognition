@@ -1,18 +1,15 @@
-FROM python:3.10-slim
+FROM python:3.10
 
 WORKDIR /app
-
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY api/ ./api
+COPY src/ ./src
+COPY models/ ./models
+COPY start.sh ./
 
-RUN mkdir -p models data/raw data/processed
 RUN chmod +x start.sh
 
 ENV PYTHONUNBUFFERED=1
