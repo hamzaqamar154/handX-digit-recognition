@@ -7,10 +7,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY api/ ./api
 COPY src/ ./src
-COPY models/ ./models
 COPY start.sh ./
 
-RUN chmod +x start.sh
+RUN mkdir -p models data/raw data/processed && \
+    chmod +x start.sh
+
+COPY models/ ./models/
 
 ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=production
