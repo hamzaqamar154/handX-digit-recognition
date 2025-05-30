@@ -20,5 +20,5 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD ["./start.sh"]
+CMD ["sh", "-c", "python -m uvicorn api.app:app --host 0.0.0.0 --port ${PORT:-8080} --log-level info --timeout-keep-alive 30 --access-log"]
 
