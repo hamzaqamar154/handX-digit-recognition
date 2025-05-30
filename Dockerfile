@@ -16,8 +16,9 @@ RUN mkdir -p models data/raw data/processed
 
 ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=production
+ENV PORT=8080
 
-EXPOSE 8000 8501
+EXPOSE 8080
 
-CMD ["python", "-m", "uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+CMD sh -c "uvicorn api.app:app --host 0.0.0.0 --port ${PORT:-8080} --workers 1"
 
