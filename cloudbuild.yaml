@@ -18,7 +18,7 @@ steps:
       - '--port'
       - '8080'
       - '--memory'
-      - '1Gi'
+      - '2Gi'
       - '--timeout'
       - '300'
       - '--max-instances'
