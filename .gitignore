@@ -23,11 +23,12 @@ wheels/
 .installed.cfg
 *.egg
 
-# Model files
-models/*.h5
+# Model files (allow trained model for deployment)
+# models/*.h5
 models/*.hdf5
 models/*.pkl
 models/*.joblib
+!models/handwriting_model.h5
 
 # Data
 data/raw/*
